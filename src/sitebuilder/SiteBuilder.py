@@ -23,8 +23,7 @@ class SiteBuilder():
     def _loadSource(self) -> None:
         os.chdir(self.src)
 
-        for (path, dnames, fnames) in Path().walk():
-            _logger.info(f"{path}, {dnames}, {fnames}")
+        for (path, _, fnames) in Path().walk():
             self.meta[path] = MetaFile.load(path)
             for fn in fnames:
                 if fn == MetaFile._NAME: continue
@@ -33,8 +32,6 @@ class SiteBuilder():
                         self.rawFiles[path/fn] = f.read()
                 except FileNotFoundError:
                     continue
-                except Exception as e:
-                    _logger.error("%s, %s, %s", os.getcwd(), path, fn)
 
         os.chdir("..")
 
