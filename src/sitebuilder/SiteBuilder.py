@@ -23,7 +23,8 @@ class SiteBuilder():
     def _loadSource(self) -> None:
         os.chdir(self.src)
 
-        for (path, _, fnames) in Path().walk():
+        for (path, dnames, fnames) in Path().walk():
+            _logger.info(f"{path}, {dnames}, {fnames}")
             self.meta[path] = MetaFile.load(path)
             for fn in fnames:
                 if fn == MetaFile._NAME: continue
