@@ -33,7 +33,7 @@ class SiteBuilder():
                 except FileNotFoundError:
                     continue
                 except Exception as e:
-                    _logger.error("%s, %s, %s", os.getcwd(), path, fn, e)
+                    _logger.error("%s, %s, %s", os.getcwd(), path, fn)
 
         os.chdir("..")
 
