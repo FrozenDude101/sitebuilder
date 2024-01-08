@@ -32,7 +32,7 @@ class SiteBuilder():
                 except FileNotFoundError:
                     continue
                 except UnicodeDecodeError as e:
-                    raise Exception(path, fn, e.reason)
+                    raise Exception(os.getcwd(), path, fn, e.reason)
 
         os.chdir("..")
 
