@@ -6,8 +6,9 @@ if TYPE_CHECKING:
 import os
 from pathlib import Path
 
+from .Logging import logger
 from .MetaFile import MetaFile
-
+_logger = logger.getChild("build")
 
 class SiteBuilder():
 
@@ -31,8 +32,8 @@ class SiteBuilder():
                         self.rawFiles[path/fn] = f.read()
                 except FileNotFoundError:
                     continue
-                except UnicodeDecodeError as e:
-                    raise Exception(os.getcwd(), path, fn, e.reason)
+                except Exception as e:
+                    _logger.error("%s, %s, %s", os.getcwd(), path, fn, e)
 
         os.chdir("..")
 
