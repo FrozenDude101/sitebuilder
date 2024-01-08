@@ -31,9 +31,11 @@ class SiteBuilder():
                         self.rawFiles[path/fn] = f.read()
                 except FileNotFoundError:
                     continue
+                except UnicodeDecodeError as e:
+                    raise Exception(path, fn, e.reason)
 
         os.chdir("..")
-        
+
     def _saveBuild(self) -> None:
         os.chdir(self.dest)
 
