@@ -1,0 +1,5 @@
+# Python
+.venv/
+sitebuilder.egg-info/
+__pycache__/
+*.pyc
