@@ -36,17 +36,11 @@ class SiteBuilder():
         os.chdir("..")
 
     def _saveBuild(self) -> None:
-        try:
-            self.dest.mkdir()
-        except FileExistsError:
-            pass
+        self.dest.mkdir(exist_ok=True)
         os.chdir(self.dest)
 
         for (path, file) in self.files.items():
-            try:
-                path.parent.mkdir(parents=True)
-            except FileExistsError:
-                pass
+            path.parent.mkdir(parents=True, exist_ok=True)
             with open(path, "w") as f:
                 f.write(file)
 
