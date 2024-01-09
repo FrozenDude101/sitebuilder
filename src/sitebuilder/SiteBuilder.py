@@ -8,6 +8,7 @@ from pathlib import Path
 
 from .Logging import logger
 from .MetaFile import MetaFile
+from .Template import Template
 _logger = logger.getChild("build")
 
 class SiteBuilder():
@@ -16,9 +17,18 @@ class SiteBuilder():
         self.src  = Path(src)
         self.dest = Path(dest)
 
-        self.meta:     dict[Path, MetaFile] = {}
-        self.rawFiles: dict[Path, str]      = {}
-        self.files:    dict[Path, str]      = {}
+        self.templates: dict[str, Template]  = {}
+
+        self.meta:      dict[Path, MetaFile] = {}
+        self.rawFiles:  dict[Path, str]      = {}
+        self.files:     dict[Path, str]      = {}
+
+    def addTemplates(self, path: str|PathLike) -> None:
+        path = Path(path)
+        for p in path.glob("**/*.html"):
+            t = Template(p.stem)
+            t.feed(p.read_text())
+            self.templates[p.stem] = t
 
     def _loadSource(self) -> None:
         os.chdir(self.src)
@@ -47,7 +57,15 @@ class SiteBuilder():
         os.chdir("..")
 
     def _buildFiles(self) -> None:
-        self.files = self.rawFiles
+        for p, f in self.rawFiles.items():
+            meta = self.meta[p.parent]
+            templateKey = meta.getTemplate()
+            if templateKey is None:
+                self.files[p] = f
+                continue
+
+            template = self.templates[templateKey]
+            self.files[p] = template.replace(templateKey, f).data
 
     def build(self) -> None:
         self._loadSource()

@@ -14,15 +14,16 @@ class MetaFile():
 
     _NAME = "meta.json"
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, template=None) -> None:
+        self.template = template
+
     @staticmethod
     def load(path: str|PathLike) -> MetaFile:
         path = Path(path)/MetaFile._NAME
         
         try:
             with open(path) as f:
-                raw = json.load(f)
+                raw: dict = json.load(f)
         except FileNotFoundError:
             _logger.debug("No file found at %s, using default meta values.", path)
             return MetaFile()
@@ -30,5 +31,12 @@ class MetaFile():
             _logger.debug(e)
             _logger.warn("Problem parsing %s, using default meta values.", path)
             return MetaFile()
-
-        return MetaFile()
+        
+        template = raw.get("template")
+        
+        return MetaFile(
+            template=template
+        )
+    
+    def getTemplate(self) -> str|None:
+        return self.template
